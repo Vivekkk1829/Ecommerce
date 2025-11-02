@@ -36,7 +36,7 @@ function App() {
       </div>
     )
   }
-  console.log(isLoading,user)
+  // console.log(isLoading,user)
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       
