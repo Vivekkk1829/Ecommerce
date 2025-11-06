@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { useDispatch } from "react-redux";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
 
-function ShoppingProductTile({ product,handleGetProductDetails }) {
+function ShoppingProductTile({ product,handleGetProductDetails,handleAddToCart}) {
   const dispatch = useDispatch();
   return (
     
@@ -49,10 +49,11 @@ function ShoppingProductTile({ product,handleGetProductDetails }) {
             ) : null}
           </div>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full bg-black text-white">Add to Cart</Button>
-        </CardFooter>
+       
       </div>
+       <CardFooter className="-mt-[15%]">
+          <Button onClick={()=>handleAddToCart(product?._id)} className="w-full bg-black text-white">Add to Cart</Button>
+        </CardFooter>
     </Card>
   );
 }

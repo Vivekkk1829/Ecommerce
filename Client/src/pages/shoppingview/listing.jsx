@@ -1,6 +1,7 @@
 import ProductFilter from "@/components/shoppingview/filter";
 import ShoppingProductTile from "@/components/shoppingview/product-tile";
 import { Button } from "@/components/ui/button";
+import {toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +14,7 @@ import {
   fetchAllFilteredProducts,
   fetchProductDetails,
 } from "@/store/shop/products-slice";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { ArrowUpDownIcon } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +40,7 @@ function ShoppingListing() {
     (state) => state.shopProducts
   );
   const [filters, setFilters] = useState({});
+  const { user } = useSelector((state) => state.auth);
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -45,6 +48,22 @@ function ShoppingListing() {
   function handleGetProductDetails(getCurrentProductId) {
     console.log(getCurrentProductId);
     dispatch(fetchProductDetails(getCurrentProductId));
+  }
+
+  function handleAddToCart(getCurrentProductId) {
+    console.log(getCurrentProductId);
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if(data?.payload?.success){
+         dispatch(fetchCartItems({userId: user?.id}))
+         toast.success("Product is Added to cart")
+      }
+    });
   }
 
   function handleSort(value) {
@@ -92,7 +111,6 @@ function ShoppingListing() {
         fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
       );
   }, [dispatch, sort, filters]);
-  console.log(productDetails, "ProductDetails");
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
@@ -142,6 +160,7 @@ function ShoppingListing() {
                 <ShoppingProductTile
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
+                  handleAddToCart={handleAddToCart}
                 />
               ))
             : null}

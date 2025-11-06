@@ -1,15 +1,23 @@
 import { Link, useNavigate } from "react-router-dom";
-import { House, Menu, ShoppingCart,UserCog,LogOut } from "lucide-react";
+import { House, Menu, ShoppingCart, UserCog, LogOut } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { shoppingViewHeaderMenuItems } from "@/config";
 import { useSelector } from "react-redux";
-import { logoutUser } from "@/store/auth-slice"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger,DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem} from "../ui/dropdown-menu";
+import { useEffect, useState } from "react";
+import { logoutUser } from "@/store/auth-slice";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { useDispatch } from "react-redux"
-
-
+import { useDispatch } from "react-redux";
+import UserCartWrapper from "./cart-wrapper";
+import { fetchCartItems } from "@/store/shop/cart-slice";
 
 function MenuItems() {
   return (
@@ -27,39 +35,69 @@ function MenuItems() {
   );
 }
 function HeaderRightContent() {
-    const { user } = useSelector((state) => state.auth);
-    const navigate=useNavigate()
-    const dispatch=useDispatch()
-    function handleLogout(){
-    dispatch(logoutUser())
+  const { user } = useSelector((state) => state.auth);
+  const [openCartSheet, setOpenCartSheet] = useState(false);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  function handleLogout() {
+    dispatch(logoutUser());
+  }
+  useEffect(() => {
+   
+    if (user?.id) {
+      dispatch(fetchCartItems({userId:user?.id}));
     }
+  }, [dispatch]);
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Button variant="outline" size="icon">
-        <ShoppingCart className="w-6 h-6" />
-        <span className="sr-only">User Cart</span>
-      </Button>
+      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+        <Button
+          onClick={() => setOpenCartSheet(true)}
+          variant="outline"
+          size="icon"
+        >
+          <ShoppingCart className="w-6 h-6" />
+          <span className="sr-only">User Cart</span>
+        </Button>
+
+        <UserCartWrapper
+          cartItems={
+            cartItems && cartItems.items && cartItems.items.length > 0
+              ? cartItems.items
+              : []
+          }
+        />
+      </Sheet>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
-            <AvatarFallback className="bg-black text-white font-extrabold">{user?.userName[0].toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="bg-black text-white font-extrabold">
+              {user?.userName[0].toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" className="w-56 bg-white mt-2">
-            <DropdownMenuLabel>
-                Logged In  as {user?.userName}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator/>
-            <DropdownMenuItem onClick={()=>{navigate('/shop/account')}}>
-                <UserCog className="mr-2 h-4 w-4"/>
-                Account
-            </DropdownMenuItem>
-            <DropdownMenuSeparator/>
-            <DropdownMenuItem onClick={()=>{handleLogout()}}>
-                <LogOut  className="mr-2 h-4 w-4"/>
-                Logout
-            </DropdownMenuItem>
-
+          <DropdownMenuLabel>Logged In as {user?.userName}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => {
+              navigate("/shop/account");
+            }}
+          >
+            <UserCog className="mr-2 h-4 w-4" />
+            Account
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => {
+              handleLogout();
+            }}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -83,7 +121,7 @@ function ShoppingHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="bg-white w-full max-w-xs">
             <MenuItems />
-            <HeaderRightContent/>
+            <HeaderRightContent />
           </SheetContent>
         </Sheet>
 
