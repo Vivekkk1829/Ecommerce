@@ -1,7 +1,7 @@
 import ProductFilter from "@/components/shoppingview/filter";
 import ShoppingProductTile from "@/components/shoppingview/product-tile";
 import { Button } from "@/components/ui/button";
-import {toast } from 'sonner';
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +44,14 @@ function ShoppingListing() {
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const category = searchParams.get("category");
+
+  useEffect(() => {
+    const filters = category ? { category: [category] } : null;
+    dispatch(
+      fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
+    );
+  }, [category, sort]);
 
   function handleGetProductDetails(getCurrentProductId) {
     console.log(getCurrentProductId);
@@ -59,9 +67,9 @@ function ShoppingListing() {
         quantity: 1,
       })
     ).then((data) => {
-      if(data?.payload?.success){
-         dispatch(fetchCartItems({userId: user?.id}))
-         toast.success("Product is Added to cart")
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems({ userId: user?.id }));
+        toast.success("Product is Added to cart");
       }
     });
   }

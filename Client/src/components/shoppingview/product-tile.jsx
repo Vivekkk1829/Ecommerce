@@ -51,7 +51,7 @@ function ShoppingProductTile({ product,handleGetProductDetails,handleAddToCart})
         </CardContent>
        
       </div>
-       <CardFooter className="-mt-[15%]">
+       <CardFooter className="-mt-10">
           <Button onClick={()=>handleAddToCart(product?._id)} className="w-full bg-black text-white">Add to Cart</Button>
         </CardFooter>
     </Card>
