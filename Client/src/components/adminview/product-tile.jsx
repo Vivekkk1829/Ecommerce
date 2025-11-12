@@ -9,9 +9,9 @@ function AdminProductTile({
   handleDelte
 }) {
   return (
-    <Card className="w-full max-w-sm mx-auto">
+    <Card className="w-full max-w-sm mx-auto bg-white">
       <div>
-        <div className="relative w-full h-[300px] bg-gray-100 flex items-center justify-center">
+        <div className="relative w-full h-[300px]  flex items-center justify-center">
           <img
             src={product?.image}
             alt={product?.title}

@@ -76,10 +76,10 @@ function HeaderRightContent() {
   }
 
   useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
+   dispatch(fetchCartItems({ userId: user?.id }));
+
   }, [dispatch]);
 
-  console.log(cartItems, "sangam");
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -106,7 +106,7 @@ function HeaderRightContent() {
         />
       </Sheet>
 
-      <DropdownMenu>
+      <DropdownMenu className="bg-white">
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
             <AvatarFallback className="bg-black text-white font-extrabold">
@@ -114,7 +114,7 @@ function HeaderRightContent() {
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" className="w-56">
+        <DropdownMenuContent side="right" className="w-56 bg-white">
           <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate("/shop/account")}>
