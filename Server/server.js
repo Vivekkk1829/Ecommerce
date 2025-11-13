@@ -9,6 +9,7 @@ const shopCartRouter=require('./routes/shop/cart-routes.js')
 const shopAddressRouter=require('./routes/shop/address-routes.js')
 const shopOrderRouter=require('./routes/shop/order-routes.js')
 const adminOrderRouter=require('./routes/admin/order-routes.js')
+const shopSearchRouter=require('./routes/shop/search-routes.js')
 
 //MongoDB Connection 
 mongoose.connect('mongodb+srv://vivekkatta295:vivek1829@cluste0.odtbp5a.mongodb.net/')
@@ -44,5 +45,6 @@ app.use("/api/shop/products",shopProductsRouter)
 app.use("/api/shop/cart",shopCartRouter)
 app.use("/api/shop/address",shopAddressRouter)
 app.use("/api/shop/order",shopOrderRouter)
+app.use("/api/shop/search",shopSearchRouter)
 
 app.listen(PORT,()=>{console.log(`Server running sucessfully on ${PORT}`)});
