@@ -5,12 +5,15 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { useDispatch } from "react-redux";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
 
-function ShoppingProductTile({ product,handleGetProductDetails,handleAddToCart}) {
+function ShoppingProductTile({
+  product,
+  handleGetProductDetails,
+  handleAddToCart,
+}) {
   const dispatch = useDispatch();
   return (
-    
     <Card className="w-full max-w-sm mx-auto">
-      <div onClick={()=>handleGetProductDetails(product?._id)}>
+      <div onClick={() => handleGetProductDetails(product?._id)}>
         <div className="relative">
           <img
             src={product?.image}
@@ -18,7 +21,15 @@ function ShoppingProductTile({ product,handleGetProductDetails,handleAddToCart})
             className="w-full h-[300px] object-contain rounded-t-lg bg-gray-100"
           />
 
-          {product?.salePrice > 0 ? (
+          {product?.totalStock === 0 ? (
+            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+              Out Of Stock
+            </Badge>
+          ) : product?.totalStock < 10 ? (
+            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+              {`Only ${product?.totalStock} items left`}
+            </Badge>
+          ) : product?.salePrice > 0 ? (
             <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
               Sale
             </Badge>
@@ -49,11 +60,24 @@ function ShoppingProductTile({ product,handleGetProductDetails,handleAddToCart})
             ) : null}
           </div>
         </CardContent>
-       
       </div>
-       <CardFooter className="-mt-10">
-          <Button onClick={()=>handleAddToCart(product?._id)} className="w-full bg-black text-white">Add to Cart</Button>
-        </CardFooter>
+      <CardFooter className="-mt-10">
+        {product?.totalStock === 0 ? (
+          <Button
+            
+            className="w-full bg-black text-white opacity-65 cursor-not-allowed"
+          >
+            Out of Stock
+          </Button>
+        ) : (
+          <Button
+            onClick={() => handleAddToCart(product?._id,product?.totalStock)}
+            className="w-full bg-black text-white"
+          >
+            Add to Cart
+          </Button>
+        )}
+      </CardFooter>
     </Card>
   );
 }

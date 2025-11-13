@@ -6,6 +6,8 @@ import { toast } from "sonner";
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { productList } = useSelector((state) => state.shopProducts);
   const dispatch = useDispatch();
   function handleCartItemDelete(getCartItem) {
     dispatch(
@@ -17,6 +19,27 @@ function UserCartItemsContent({ cartItem }) {
     });
   }
   function handleUpdateQuantity(getCartItem, typeOfAction) {
+    if (typeOfAction ==="plus") {
+      let getCartItems = cartItems.items || [];
+
+      if (getCartItems.length) {
+        const indexOfCurrentCartItem = getCartItems.findIndex(
+          (item) => item.productId ===  getCartItem?.productId
+        );
+        const getCurrentProductIndex =productList.findIndex(product=>product._id===getCartItem?.productId)
+        const getTotalStock =productList[getCurrentProductIndex].totalStock
+        if (indexOfCurrentCartItem > -1) {
+          const getQuantity = getCartItems[indexOfCurrentCartItem].quantity;
+          if (getQuantity + 1 > getTotalStock) {
+            toast.error(
+              `Only ${getQuantity} quantity can be added for this item`
+            );
+
+            return;
+          }
+        }
+      }
+    }
     dispatch(
       updateCartQuantity({
         userId: user?.id,
@@ -46,7 +69,7 @@ function UserCartItemsContent({ cartItem }) {
             variant="outline"
             className="h-6 w-6 rounded-full"
             size="icon"
-            disabled={cartItem?.quantity===1}
+            disabled={cartItem?.quantity === 1}
             onClick={() => handleUpdateQuantity(cartItem, "minus")}
           >
             <Minus className="w-4 h-4" />
