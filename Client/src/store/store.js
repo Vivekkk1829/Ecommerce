@@ -7,18 +7,21 @@ import shopCartSlice from "./shop/cart-slice";
 import shopAddressSclide from "./shop/address-slice";
 import shopOrderSlice from "./shop/order-slice";
 import shopSearchSlice from "./shop/search-slice";
-
+import shopReviewSlice from "./shop/review-slice";
+import commonFeatureSlice from "./common-slice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     adminProducts: adminProductsSlice,
-    adminOrder:adminOrderSlice,
+    adminOrder: adminOrderSlice,
     shopProducts: shopProductSlice,
     shopCart: shopCartSlice,
     shopAddress: shopAddressSclide,
-    shopOrder: shopOrderSlice,   
-    shopSearch:shopSearchSlice 
+    shopOrder: shopOrderSlice,
+    shopSearch: shopSearchSlice,
+    shopReview: shopReviewSlice,
+    commonFeature:commonFeatureSlice
   },
 });
 

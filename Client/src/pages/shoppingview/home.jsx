@@ -30,6 +30,7 @@ import ShoppingProductTile from "@/components/shoppingview/product-tile";
 import { useNavigate } from "react-router-dom";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import ProductDetailsDialog from "@/components/shoppingview/product-details";
+import { getFeatureImages } from "@/store/common-slice";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -49,8 +50,11 @@ const brandsWithIcon = [
 ];
 
 function ShoppingHome() {
-  const slides = [bannerOne, bannerTwo, bannerThree];
-  const { productList,productDetails} = useSelector((state) => state.shopProducts);
+  
+  const { productList, productDetails } = useSelector(
+    (state) => state.shopProducts
+  );
+  const { featureImageList } = useSelector((state) => state.commonFeature);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -89,10 +93,10 @@ function ShoppingHome() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % featureImageList.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [featureImageList]);
 
   useEffect(() => {
     dispatch(
@@ -103,32 +107,36 @@ function ShoppingHome() {
     );
   }, [dispatch]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (productDetails !== null) {
       setOpenDetailsDialog(true);
     }
   }, [productDetails]);
+
+  useEffect(() => {
+    dispatch(getFeatureImages());
+  }, [dispatch]);
 
   console.log(productList, "productList");
 
   return (
     <div className="flex flex-col min-h-screen">
       <div className="relative w-full h-[600px] overflow-hidden">
-        {slides.map((slide, index) => (
+        {featureImageList && featureImageList.length>0?featureImageList.map((slide, index) => (
           <img
-            src={slide}
+            src={slide?.image}
             key={index}
             className={`${
               index === currentSlide ? "opacity-100" : "opacity-0"
             } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
           />
-        ))}
+        )):null}
         <Button
           variant="outline"
           size="icon"
           onClick={() =>
             setCurrentSlide(
-              (prevSlide) => (prevSlide - 1 + slides.length) % slides.length
+              (prevSlide) => (prevSlide - 1 + featureImageList.length) % featureImageList.length
             )
           }
           className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white"
@@ -141,7 +149,7 @@ function ShoppingHome() {
           size="icon"
           onClick={() =>
             setCurrentSlide(
-              (prevSlide) => (prevSlide + 1 + slides.length) % slides.length
+              (prevSlide) => (prevSlide + 1 + featureImageList.length) % featureImageList.length
             )
           }
           className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80"

@@ -3,7 +3,7 @@ import CommonForm from "../common/form";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { addressFormControls } from "@/config";
 import { useDispatch, useSelector } from "react-redux";
-import {toast } from 'sonner';
+import { toast } from "sonner";
 import {
   addNewAddress,
   deleteAddress,
@@ -19,7 +19,7 @@ const initialAddressFormData = {
   pincode: "",
   notes: "",
 };
-function Address({setCurrentSelectedAddress}) {
+function Address({ setCurrentSelectedAddress, selectedId }) {
   const [formData, setFormData] = useState(initialAddressFormData);
   const [currentEditedId, setCurrentEditedId] = useState(null);
   const dispatch = useDispatch();
@@ -28,9 +28,9 @@ function Address({setCurrentSelectedAddress}) {
   function handleManageAddress(event) {
     event.preventDefault();
 
-    if(addressList.length>=3 && currentEditedId===null){
-      setFormData(initialAddressFormData)
-      toast.error("You can Add max 3 Addresses")
+    if (addressList.length >= 3 && currentEditedId === null) {
+      setFormData(initialAddressFormData);
+      toast.error("You can Add max 3 Addresses");
 
       return;
     }
@@ -47,7 +47,7 @@ function Address({setCurrentSelectedAddress}) {
             dispatch(fetchAllAddresses(user?.id));
             setCurrentEditedId(null);
             setFormData(initialAddressFormData);
-            toast.success("Address Updated Successfully")
+            toast.success("Address Updated Successfully");
           }
         })
       : dispatch(
@@ -59,11 +59,10 @@ function Address({setCurrentSelectedAddress}) {
           if (data?.payload?.success) {
             dispatch(fetchAllAddresses(user?.id));
             setFormData(initialAddressFormData);
-            toast.success("Address Added Successfully")
+            toast.success("Address Added Successfully");
           }
         });
   }
-
 
   useEffect(() => {
     dispatch(fetchAllAddresses(user?.id));
@@ -80,7 +79,7 @@ function Address({setCurrentSelectedAddress}) {
     ).then((data) => {
       if (data.payload.success) {
         dispatch(fetchAllAddresses(user?.id));
-        toast.success("Address Deleted Successfully")
+        toast.success("Address Deleted Successfully");
       }
     });
   }
@@ -102,6 +101,7 @@ function Address({setCurrentSelectedAddress}) {
         {addressList && addressList.length > 0
           ? addressList.map((singleAdressItem) => (
               <AddressCard
+                selectedId={selectedId}
                 handleDeleteAddress={handleDeleteAddress}
                 handleEditAddress={handleEditAddress}
                 addresInfo={singleAdressItem}

@@ -97,7 +97,7 @@ function ShoppingCheckout() {
         <img src={img} className="h-full w-full object-cover object-center" />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5 ml-5 mr-5 pt-5">
-        <Address setCurrentSelectedAddress={setCurrentSelectedAddress} />
+        <Address selectedId={currentSelectedAddress} setCurrentSelectedAddress={setCurrentSelectedAddress} />
         <div className="flex flex-col gap-4 border p-2 rounded-lg">
           {cartItems && cartItems.items && cartItems.items.length > 0
             ? cartItems.items.map((item) => (
@@ -116,7 +116,9 @@ function ShoppingCheckout() {
               onClick={handleInitiatePaypalPayment}
               className="bg-black text-white w-full"
             >
-              Checkout With paypal
+              {
+                isPaymentStart? 'Processing Paypal Payment..' : 'Check Out with paypal'
+              }
             </Button>
           </div>
         </div>
